@@ -1,0 +1,12 @@
+*.class
+*.lock
+*.bin
+*.cache
+*.ser
+*.properties
+*.DS_Store
+.DS_Store
+.lock
+.bin
+.class
+*.MF
