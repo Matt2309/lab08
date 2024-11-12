@@ -1,7 +1,0 @@
-*.class
-*.lock
-*.bin
-*.cache
-*.ser
-*.properties
-.DS_Store
