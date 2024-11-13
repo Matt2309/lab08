@@ -9,6 +9,7 @@ public class DeathNoteImplementation implements DeathNote{
     private final List<Death> deathList;
     long startTime;
     long elapsedTime = 0L;
+    
     public DeathNoteImplementation(){
         deathList = new ArrayList<>();
     }
@@ -51,11 +52,11 @@ public class DeathNoteImplementation implements DeathNote{
 
     @Override
     public void writeName(String name){
-        if(name != null){
+        if(name != null && !name.isBlank()){
             startTime = System.currentTimeMillis();
             this.deathList.add(new Death(name));
         }else{
-            throw new NullPointerException();
+            throw new NullPointerException("The name shouldn't be null");
         }
     }
 
@@ -66,7 +67,7 @@ public class DeathNoteImplementation implements DeathNote{
             this.deathList.getLast().setCause(cause);
             return true;
         }else{
-            throw new IllegalStateException();
+            throw new IllegalStateException("The cause should be not null and written within 40ms");
         }
     }
 
@@ -77,7 +78,7 @@ public class DeathNoteImplementation implements DeathNote{
             this.deathList.getLast().setDetails(details);
             return true;
         }else{
-            throw new IllegalStateException();
+            throw new IllegalStateException("The detail should be not null and written within 6 second and 40ms");
         }
     }
 
@@ -88,7 +89,7 @@ public class DeathNoteImplementation implements DeathNote{
                 return death.getCause() != null ? death.getCause() : "";
             }
         }
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException("Death cause not in list");
     }
 
     @Override
@@ -98,7 +99,7 @@ public class DeathNoteImplementation implements DeathNote{
                 return death.getDetails() != null ? death.getDetails() : "";
             }
         }
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException("Death details not in list");
     }
 
     @Override
