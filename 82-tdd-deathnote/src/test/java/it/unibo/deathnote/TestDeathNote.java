@@ -1,5 +1,7 @@
 package it.unibo.deathnote;
 
+import java.io.PrintStream;
+
 import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -26,6 +28,8 @@ class TestDeathNote {
 
     private static final int SLEEPTIME = 100; //ms
 
+    private static final PrintStream LOG = System.out;
+
     private DeathNote deathNote;
 
     /**
@@ -38,6 +42,7 @@ class TestDeathNote {
 
     /*
      * Check that rule number 0 and negative rules do not exist in the DeathNote rules.
+     * Check that no empty or null rules do not exist in the list
      */
     @Test
     void testGetRule(){
@@ -64,7 +69,7 @@ class TestDeathNote {
     }
 
     /*
-     * The human whose name is written in the DeathNote will eventually die
+     * Test searching uninserted human, inserting human and inserting empty name.
      */
     @Test
     void testWriteName(){
@@ -85,7 +90,7 @@ class TestDeathNote {
     }
 
     /*
-     * The human whose name is written in the DeathNote will eventually die
+     * Test writing cause before writing name, cause matches human and max inserting time.
      */
     @Test
     void testDeathCause() throws InterruptedException{
@@ -93,8 +98,7 @@ class TestDeathNote {
             deathNote.writeDeathCause(KART_ACC);
             Assertions.fail("Writing a cause before writing name should have thrown an exception");
         } catch (IllegalStateException e) {
-            assertNotNull(e.getMessage()); // Non-null message
-            assertFalse(e.getMessage().isBlank()); // Not a blank or empty message
+            assertExceptionNotEmptyOrNull(e);
         }
 
         deathNote.writeName(HUMAN1);
@@ -107,24 +111,22 @@ class TestDeathNote {
         Thread.sleep(SLEEPTIME);
         try {
             deathNote.writeDeathCause(KART_ACC);
-            Assertions.fail("Writing a cause before writing name should have thrown an exception");
+            Assertions.fail("Writing a cause after " + SLEEPTIME + "ms from writing the name should have thrown an exception");
         } catch (IllegalStateException e) {
-            assertNotNull(e.getMessage()); // Non-null message
-            assertFalse(e.getMessage().isBlank()); // Not a blank or empty message
+            assertExceptionNotEmptyOrNull(e);
         }
     }
 
     /*
-     * The human whose name is written in the DeathNote will eventually die
+     * Test writing details before writing name, getting empty details and max inserting time.
      */
     @Test
     void testDeathDETAILs() throws InterruptedException{
         try {
             deathNote.writeDetails(DETAIL);
-            Assertions.fail("Writing a details before writing name should have thrown an exception");
+            Assertions.fail("Writing details before writing name should have thrown an exception");
         } catch (IllegalStateException e) {
-            assertNotNull(e.getMessage()); // Non-null message
-            assertFalse(e.getMessage().isBlank()); // Not a blank or empty message
+            assertExceptionNotEmptyOrNull(e);
         }
 
         deathNote.writeName(HUMAN1);
@@ -138,10 +140,21 @@ class TestDeathNote {
         Thread.sleep(SLEEPTIME*61);
         try {
             deathNote.writeDetails(KART_ACC);
-            Assertions.fail("Writing a death before writing name should have thrown an exception");
+            Assertions.fail("Writing a cause after " + SLEEPTIME*61 + "ms from writing the name should have thrown an exception");
         } catch (IllegalStateException e) {
-            assertNotNull(e.getMessage()); // Non-null message
-            assertFalse(e.getMessage().isBlank()); // Not a blank or empty message
+            assertExceptionNotEmptyOrNull(e);
         }
+    }
+
+    private static void assertExceptionNotEmptyOrNull(final Throwable exception) {
+        assertNotNull(exception.getMessage()); // Non-null message
+        assertFalse(exception.getMessage().isBlank()); // Not a blank or empty message
+        LOG.println(
+            "Exception successfully collected: "
+                + exception.getClass().getSimpleName()
+                + "["
+                + exception.getMessage()
+                + "]"
+        );
     }
 }

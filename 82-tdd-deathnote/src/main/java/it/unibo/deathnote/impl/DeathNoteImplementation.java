@@ -7,8 +7,11 @@ import it.unibo.deathnote.api.DeathNote;
 
 public class DeathNoteImplementation implements DeathNote{
     private final List<Death> deathList;
+
     long startTime;
     long elapsedTime = 0L;
+
+    private static final int MAX_TIMEOUT = 40; //ms
     
     public DeathNoteImplementation(){
         deathList = new ArrayList<>();
@@ -46,7 +49,7 @@ public class DeathNoteImplementation implements DeathNote{
         if (ruleNumber > 0 && ruleNumber <= RULES.size()) {
             return RULES.get(ruleNumber);
         }else{
-            throw new IllegalArgumentException("Numero della regola inesistente");
+            throw new IllegalArgumentException("Rule number not exist");
         }
     }
 
@@ -63,7 +66,7 @@ public class DeathNoteImplementation implements DeathNote{
     @Override
     public boolean writeDeathCause(String cause){
         elapsedTime = (new Date()).getTime() - startTime;
-        if(!this.deathList.isEmpty() && cause != null && elapsedTime <= 40){
+        if(!this.deathList.isEmpty() && cause != null && elapsedTime <= MAX_TIMEOUT){
             this.deathList.getLast().setCause(cause);
             return true;
         }else{
@@ -74,7 +77,7 @@ public class DeathNoteImplementation implements DeathNote{
     @Override
     public boolean writeDetails(String details){
         elapsedTime = (new Date()).getTime() - startTime;
-        if(!this.deathList.isEmpty() && details != null && elapsedTime <= 1400){
+        if(!this.deathList.isEmpty() && details != null && elapsedTime <= MAX_TIMEOUT*35){
             this.deathList.getLast().setDetails(details);
             return true;
         }else{
@@ -89,7 +92,7 @@ public class DeathNoteImplementation implements DeathNote{
                 return death.getCause() != null ? death.getCause() : "";
             }
         }
-        throw new IllegalArgumentException("Death cause not in list");
+        throw new IllegalArgumentException("Name not in list");
     }
 
     @Override
@@ -99,7 +102,7 @@ public class DeathNoteImplementation implements DeathNote{
                 return death.getDetails() != null ? death.getDetails() : "";
             }
         }
-        throw new IllegalArgumentException("Death details not in list");
+        throw new IllegalArgumentException("Name not in list");
     }
 
     @Override
