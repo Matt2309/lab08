@@ -1,9 +1,12 @@
 package it.unibo.mvc;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 import it.unibo.mvc.api.DrawNumberController;
+import it.unibo.mvc.api.DrawNumberView;
 import it.unibo.mvc.controller.DrawNumberControllerImpl;
 import it.unibo.mvc.model.DrawNumberImpl;
-import it.unibo.mvc.view.DrawNumberSwingView;
 
 /**
  * Application entry-point.
@@ -23,9 +26,24 @@ public final class LaunchApp {
      * @throws IllegalAccessException in case of reflection issues
      * @throws IllegalArgumentException in case of reflection issues
      */
-    public static void main(final String... args) {
+    public static void main(final String... args) throws IllegalStateException {
         final var model = new DrawNumberImpl();
         final DrawNumberController app = new DrawNumberControllerImpl(model);
-        app.addView(new DrawNumberSwingView());
+
+        for (String className : args) {
+            try{
+                final Class <?> cl = Class.forName(className);
+                final Constructor <?> cns = cl.getConstructor();
+                final Object o = cns.newInstance();
+                app.addView((DrawNumberView)o);
+            } catch(InstantiationException
+                  | IllegalAccessException
+                  | ClassNotFoundException
+                  | NoSuchMethodException 
+                  | InvocationTargetException 
+                  | IllegalArgumentException e){
+                throw new IllegalStateException(e);
+            }
+        }
     }
 }
